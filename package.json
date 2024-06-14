@@ -1,0 +1,31 @@
+{
+  "name": "todoexercise",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "http-server -o",
+    "test": "playwright test --ui",
+    "lint": "eslint --color **/*.ts",
+    "lint:fix": "eslint --fix **/*.ts"
+  },
+  "author": "",
+  "description": "",
+  "dependencies": {
+    "http-server": "^14.1.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.44.1",
+    "@types/node": "^20.14.2",
+    "@typescript-eslint/eslint-plugin": "^7.11.0",
+    "@typescript-eslint/parser": "^7.11.0",
+    "eslint": "^8.57.0",
+    "eslint-config-standard": "^17.1.0",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-playwright": "^1.6.2",
+    "eslint-plugin-promise": "^6.2.0",
+    "playwright": "^1.44.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
+  }
+}

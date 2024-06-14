@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Todo List App</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+</head>
+<body class="bg-gray-100 font-sans">
+  <div class="min-h-screen flex items-center justify-center">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-96">
+      <h1 class="text-2xl font-semibold mb-4">Todo List</h1>
+      <!-- Todo list will go here -->
+      <div x-data="todoApp()">
+        <input x-model="newTodo" @keydown.enter="addTodo" data-testid="todo-new" placeholder="Add a new todo"
+          class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring focus:ring-blue-200">
+        <ul class="mt-4">
+          <template x-for="(todo, index) in filteredTodos">
+            <li class="flex justify-between items-center py-2" x-init="$watch('todo.complete', (value) => refreshFilter())">
+              <input type="checkbox" id="checkbox" x-model="todo.complete" data-testid="todo-item-complete">
+              <s x-show="todo.complete"><div class="cursor-pointer" x-text="todo.text" data-testid="todo-item-text"></div></s>
+              <div x-show="!todo.complete" class="cursor-pointer" x-text="todo.text" data-testid="todo-item-text"></div>
+              <button @click="removeTodoAtIndex(index)" data-testid="todo-item-remove" class="text-red-500 focus:outline-none">
+                <i class="material-icons">close</i>
+              </button>
+            </li>
+          </template>
+        </ul>
+        <fieldset>
+          <legend class="text-sm font-semibold leading-6 text-gray-900">Filter</legend>
+          <div class="mt-6 space-y-6 sm:flex sm:items-center sm:space-x-10 sm:space-y-0">
+            <div class="flex items-center">
+              <input id="email" name="notification-method" type="radio" value="all" x-model="filter" checked class="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600">
+              <label for="email" class="ml-3 block text-sm font-medium leading-6 text-gray-900">All</label>
+            </div>
+            <div class="flex items-center">
+              <input id="sms" name="notification-method" type="radio" value="active" x-model="filter" class="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600">
+              <label for="sms" class="ml-3 block text-sm font-medium leading-6 text-gray-900">Active</label>
+            </div>
+            <div class="flex items-center">
+              <input id="push" name="notification-method" type="radio" value="completed" x-model="filter" class="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600">
+              <label for="push" class="ml-3 block text-sm font-medium leading-6 text-gray-900">Completed</label>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function todoApp() {
+      return {
+        todos: [],
+        filteredTodos: [],
+        newTodo: '',
+        filter: 'all',
+
+        init() {
+          this.todos = [
+            { text: 'Run the To Do app', complete: true },
+            { text: 'Write some playwright tests', complete: false },
+          ];
+          this.filteredTodos = this.todos;
+
+          this.$watch('filter', value => {
+            this.refreshFilter(value);
+          });
+        },
+
+        refreshFilter(filter) {
+          if (!filter) filter = this.filter;
+
+          if (filter === 'active') {
+            this.filteredTodos = this.todos.filter(todo => !todo.complete);
+          } else if (filter === 'completed') {
+            this.filteredTodos = this.todos.filter(todo => todo.complete);
+          } else {
+            this.filteredTodos = this.todos;
+          }
+        },
+
+        addTodo() {
+          this.todos.push({ text: this.newTodo, complete: false });
+          this.newTodo = '';
+          this.refreshFilter(this.filter);
+        },
+
+        removeTodoAtIndex(index) {
+          const indexToRemove = this.todos.indexOf(this.filteredTodos[index]);
+          this.todos.splice(indexToRemove, 1);
+          this.refreshFilter(this.filter);
+        }
+      }
+    }
+  </script>
+</body>
+</html>
